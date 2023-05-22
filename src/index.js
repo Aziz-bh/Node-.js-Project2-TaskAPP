@@ -3,37 +3,43 @@ require("./db/mongoose");
 const bodyParser = require("body-parser");
 
 const Task = require("./models/task");
-
+const routerUser = require("./routers/user");
+const routerTask = require("./routers/task");
 const User = require("./models/user");
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-
-app.post("/users", (req, res) => {
-  const user = new User(req.body);
-  console.log(req.body);
-  user
-    .save()
-    .then((user) => {
-      res.status(201).send(user);
-    })
-    .catch((error) => {
-      res.status(400).send(error);
-    });
-});
-
-app.post("/tasks", (req, res) => {
-  const task = new Task(req.body);
-  task
-    .save()
-    .then((task) => {
-      res.status(201).send(task);
-    })
-    .catch((error) => {
-      res.status(400).send(error);
-    });
-});
+app.use(routerUser);
+app.use(routerTask);
 app.listen(port, () => {
   console.log("server is up and running at port" + port);
 });
+
+const updateAgeAndCount = async (id, age) => {
+  const user = await User.findByIdAndUpdate(id, { age });
+  const count = await User.countDocuments({ age });
+  return count;
+};
+
+// updateAgeAndCount("646b64dd78697f62719e702d", 2)
+//   .then((count) => {
+//     console.log(count);
+//   })
+//   .catch((e) => {
+//     console.log(e);
+//   });
+
+const deleteAndCountTask = async (id) => {
+  await Task.findByIdAndDelete(id);
+  const count = await Task.countDocuments();
+  return count;
+};
+
+deleteAndCountTask("646b7fc8e46d7a4d152964fe")
+  .then((r) => {
+    console.log(r);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
