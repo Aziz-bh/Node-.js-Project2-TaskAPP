@@ -13,6 +13,17 @@ app.listen(port, () => {
   console.log("server is up and running at port" + port);
 });
 
+const jwt = require("jsonwebtoken");
+
+const myFunction = async () => {
+  const token = jwt.sign({ _id: "abc123" }, "thisisit" ,{expiresIn:'7 days'});
+
+ const data = jwt.verify(token,'thisisit')
+ console.log(data)
+
+  console.log(token);
+};
+myFunction();
 
 // const updateAgeAndCount = async (id, age) => {
 //   const user = await User.findByIdAndUpdate(id, { age });

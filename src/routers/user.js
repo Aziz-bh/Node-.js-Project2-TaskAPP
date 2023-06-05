@@ -4,9 +4,13 @@ const router = new express.Router();
 
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
+  const token = await user.generateAuthToken();
   try {
     const u = await user.save();
-    res.status(201).send(u);
+    res.status(201).send({
+      user: u,
+      token,
+    });
   } catch (e) {
     res.status(400).send(error);
   }
@@ -18,7 +22,8 @@ router.post("/users/login", async (req, res) => {
       req.body.email,
       req.body.password
     );
-    res.send(user);
+    const token = await user.generateAuthToken();
+    res.send({ user, token });
   } catch (e) {
     res.status(400).send();
   }
