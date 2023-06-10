@@ -29,17 +29,19 @@ router.post("/tasks", auth, async (req, res) => {
 });
 
 // set a filter
-
+// completed=true for example
+// get tasks?limit=10&skip=20
 router.get("/tasks", auth, async (req, res) => {
   const match = {};
 
   if (req.query.completed) {
     match.completed = req.query.completed === "true";
-    console.log("🚀 ~ file: task.js:38 ~ router.get ~ match:", {...match})
   }
-  console.log("🚀 ~ file: task.js:38 ~ router.get ~ match:", {...match})
   try {
-    const tasks = await Task.find({ owner: req.user._id, ...match });
+    const tasks = await Task.find({ owner: req.user._id, ...match })
+      .skip(req.query.skip ? req.query.skip : 0)
+      .limit(parseInt(req.query.limit ? req.query.limit : 20))
+      .sort({ createdAt: req.query.sortBy === "desc" ? -1 : 1 });
     if (!tasks || tasks.length === 0) {
       res.status(404).send();
     } else {
