@@ -27,9 +27,19 @@ router.post("/tasks", auth, async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+// set a filter
+
 router.get("/tasks", auth, async (req, res) => {
+  const match = {};
+
+  if (req.query.completed) {
+    match.completed = req.query.completed === "true";
+    console.log("🚀 ~ file: task.js:38 ~ router.get ~ match:", {...match})
+  }
+  console.log("🚀 ~ file: task.js:38 ~ router.get ~ match:", {...match})
   try {
-    const tasks = await Task.find({ owner: req.user._id });
+    const tasks = await Task.find({ owner: req.user._id, ...match });
     if (!tasks || tasks.length === 0) {
       res.status(404).send();
     } else {
