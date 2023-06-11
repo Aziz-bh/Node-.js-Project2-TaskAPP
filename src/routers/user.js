@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const productivity = require("../middleware/productivity");
 const multer = require("multer");
 const sharp = require("sharp");
 const { sendWelcomeEmail } = require("../emails/account");
@@ -71,8 +72,8 @@ router.post("/users/logoutAll", auth, async (req, res) => {
   }
 });
 
-router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user);
+router.get("/users/me", auth, productivity, async (req, res) => {
+  res.send({ ...req.user.toJSON(), prod: req.user.prod });
 });
 router.get("/user/:id", async (req, res) => {
   try {
