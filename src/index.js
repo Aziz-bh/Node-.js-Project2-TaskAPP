@@ -3,22 +3,20 @@ require("./db/mongoose");
 const bodyParser = require("body-parser");
 const routerUser = require("./routers/user");
 const routerTask = require("./routers/task");
+require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 app.use(routerUser);
 app.use(routerTask);
 app.listen(port, () => {
-  console.log("server is up and running at port" + port);
+  console.log("server is up and running at port " + port);
 });
 
+const Task = require("./models/task");
 
-const Task = require('./models/task')
-
-const myFunction = async () => {
-
-};
+const myFunction = async () => {};
 myFunction();
 
 // const updateAgeAndCount = async (id, age) => {

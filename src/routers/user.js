@@ -3,6 +3,7 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const sharp = require("sharp");
+const { sendWelcomeEmail } = require("../emails/account");
 const upload = multer({
   limits: {
     fileSize: 1000000,
@@ -21,6 +22,12 @@ router.post("/users", async (req, res) => {
   const token = await user.generateAuthToken();
   try {
     const u = await user.save();
+    sendWelcomeEmail(
+      user.email,
+      user.name,
+      "welcome  to our app",
+      "hello and welcome " + user.name
+    );
     res.status(201).send({
       user: u,
       token,
@@ -109,6 +116,12 @@ router.delete("/users/me", auth, async (req, res) => {
     if (!user) {
       return res.status(404).send();
     }
+    sendWelcomeEmail(
+      user.email,
+      user.name,
+      "deleting account",
+      user.name + " it's sad to see you leaving us :'("
+    );
     res.send(user);
   } catch (e) {
     res.status(500).send();
