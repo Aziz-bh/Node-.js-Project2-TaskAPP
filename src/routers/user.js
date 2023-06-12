@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const {follow,unfollow} = require("../middleware/follow");
 const productivity = require("../middleware/productivity");
 const multer = require("multer");
 const sharp = require("sharp");
@@ -164,6 +165,22 @@ router.get("/users/:id/avatar", async (req, res) => {
     res.send(user.avatar);
   } catch (e) {
     res.status(404).send();
+  }
+});
+
+router.post("/users/add/:id", auth, follow, async (req, res) => {
+  try {
+    res.send(req.user);
+  } catch (e) {
+    res.status(401).send(e.message);
+  }
+});
+
+router.post("/users/remove/:id", auth, unfollow, async (req, res) => {
+  try {
+    res.send(req.user);
+  } catch (e) {
+    res.status(401).send(e.message);
   }
 });
 module.exports = router;
