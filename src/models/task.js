@@ -20,14 +20,14 @@ const taskSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
   },
   { timestamps: true }
 );
-taskSchema.virtual("categories", {
-  ref: "Category",
-  localField: "_id",
-  foreignField: "tasks",
-});
+
 const Task = mongoose.model("Task", taskSchema);
 
 module.exports = Task;

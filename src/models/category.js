@@ -13,17 +13,15 @@ const categorySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tasks: [
-      {
-        task: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "task",
-        },
-      },
-    ],
   },
   { timestamps: true }
 );
+
+categorySchema.virtual("tasks", {
+    ref: "Task",
+    localField: "_id",
+    foreignField: "category",
+  });
 
 const Category = mongoose.model("Category", categorySchema);
 
