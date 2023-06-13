@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
+const Category = require("./category");
 require("dotenv").config();
 const userSchema = new mongoose.Schema(
   {
@@ -10,7 +11,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
     age: {
       type: Number,
@@ -79,6 +79,12 @@ const userSchema = new mongoose.Schema(
 
 userSchema.virtual("tasks", {
   ref: "Task",
+  localField: "_id",
+  foreignField: "owner",
+});
+
+userSchema.virtual("categories", {
+  ref: "Category",
   localField: "_id",
   foreignField: "owner",
 });

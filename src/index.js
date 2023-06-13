@@ -3,6 +3,7 @@ require("./db/mongoose");
 const bodyParser = require("body-parser");
 const routerUser = require("./routers/user");
 const routerTask = require("./routers/task");
+const routerCategory = require("./routers/category");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
@@ -10,6 +11,7 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 app.use(routerUser);
 app.use(routerTask);
+app.use(routerCategory);
 app.listen(port, () => {
   console.log("server is up and running at port " + port);
 });

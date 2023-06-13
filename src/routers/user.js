@@ -1,7 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
-const {follow,unfollow} = require("../middleware/follow");
+const { follow, unfollow } = require("../middleware/follow");
 const productivity = require("../middleware/productivity");
 const multer = require("multer");
 const sharp = require("sharp");
@@ -21,6 +21,8 @@ const router = new express.Router();
 
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
+  if(User.find(req.body.name))
+  throw new Error("Name already exists");
   const token = await user.generateAuthToken();
   try {
     const u = await user.save();
@@ -34,8 +36,8 @@ router.post("/users", async (req, res) => {
       user: u,
       token,
     });
-  } catch (e) {
-    res.status(400).send(error);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
   }
 });
 

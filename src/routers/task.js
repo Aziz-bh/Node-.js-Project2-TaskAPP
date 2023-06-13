@@ -3,6 +3,7 @@ const Task = require("../models/task");
 const router = new express.Router();
 
 const auth = require("../middleware/auth");
+const Category = require("../models/category");
 
 router.delete("/users/:id", async (req, res) => {
   try {
@@ -106,5 +107,35 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     res.status(500).send(e);
   }
 });
+router.post("/tasks/cat/:id", auth, async (req, res) => {
+  try {
+    const task = await Task.findById(req.body.taskid);
+    if (!task) {
+      return res.status(404).send({ error: "Task doesn't exists" });
+    }
+    if (!(await Category.findById(req.params.id))) {
+      return res.status(404).send({ error: "Category doesn't exists" });
+    }
+    task.category = req.params.id;
+    await task.save();
+    res.status(200).send(task);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
 
+router.delete("/tasksdelete/cat", auth, async (req, res) => {
+  try {
+    const task = await Task.findById(req.body.taskid);
+    console.log("🚀 ~ file: task.js:130 ~ router.delete ~ task:", task);
+    if (!task) {
+      return res.status(404).send({ error: "Task doesn't exists" });
+    }
+    task.category = undefined;
+    await task.save();
+    res.status(200).send(task);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
 module.exports = router;
